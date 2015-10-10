@@ -116,6 +116,7 @@ def generate_round(players,current_player,player,previous_player):
 #instantiate list of player objects
 players = [Player(bot_func,id) for id,bot_func in enumerate(bot_funcs)]
 
+game_cycle = iter(cycle(players))
 #game loop
 while len(active_players(players)) > 1:
     print "\n### NEW ROUND - {0}\n".format([player.num_die for player in players])
@@ -126,8 +127,7 @@ while len(active_players(players)) > 1:
         player.rolls = [randint(1,6) for _ in range(player.num_die)]
 
     #round loop
-    for current_player in cycle(players):
-
+    for current_player in game_cycle:
 
         #send round info to all players, retrieve bet from current player
         for player in players:
@@ -156,31 +156,31 @@ while len(active_players(players)) > 1:
         if response == 'bluff':
             if not previous_player:
                 raise ValueError('The first player tried to call bluff!')
+            print "### Player {0} called a bluff".format(current_player.id)
+            bet = previous_player.bets[-1]
+            if count_rolls(players)[bet[1] - 1] >= bet[0]:
+                print "The bluff was False!"
+                current_player.num_die -= 1
             else:
-                print "### Player {0} called a bluff".format(current_player.id)
-                bet = previous_player.bets[-1]
-                if count_rolls(players)[bet[1] - 1] >= bet[0]:
-                    print "The bluff was False!"
-                    current_player.num_die -= 1
-                else:
-                    print "The bluff was True!"
-                    previous_player.num_die -= 1
-                break
+                print "The bluff was True!"
+                previous_player.num_die -= 1
+            break
+
         elif response == 'spot on':
             if not previous_player:
                 raise ValueError('The first player tried to call spot on!')
+            print "### Player {0} called a spot on".format(current_player.id)
+            bet = previous_player.bets[-1]
+            if count_rolls(players)[bet[1] - 1] == bet[0]:
+                print "The spot on was True!"
+                for player in players:
+                    if player != current_player:
+                        player.num_die -= 1
             else:
-                print "### Player {0} called a spot on".format(current_player.id)
-                bet = previous_player.bets[-1]
-                if count_rolls(players)[bet[1] - 1] == bet[0]:
-                    print "The spot on was True!"
-                    for player in players:
-                        if player != current_player:
-                            player.num_die -= 1
-                else:
-                    print "The spot on was False!"
-                    current_player.num_die -= 1
-                break
+                print "The spot on was False!"
+                current_player.num_die -= 1
+            break
+
         elif type(response) == tuple:
             print "### Player {0} bet {1}".format(current_player.id,response)
             if previous_player:
