@@ -52,21 +52,23 @@ def crapbot(game):
         print 'im player {0}'.format(game['your_id'])
         print 'my dice: ',game['your_rolls']
 
-        #if were player 1, always call spot on
-        if game['your_id'] == 1:
+        #if we're player 3, always call spot on
+        if game['your_id'] == 3:
             return 'spot on'
 
-        #check if were not the first to bet
+
+        #if were the first player to bet
+        if not game['previous_bet']
+            number = 5
+            
+        #otherwise, check the last players bet
         if game['previous_bet']:
             #if the previous bet was over 7 die, call a bluff.  otherwise, give a bet
             if game['previous_bet'][0] > 7:
                 return 'bluff'
             number = game['previous_bet'][0] + 1
             value = 5
-            return (number, value)
 
-        number = 5
-        value = 5
         return (number, value)
 
     #its not our turn
