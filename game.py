@@ -1,3 +1,8 @@
+#!/bin/python
+# Evan Widloski - 2015-10-09
+# Liar's Dice simulator control program - bots are defined as single
+# Functions under the section ### BOTS ###
+
 from random import randint
 from itertools import cycle
 '''
